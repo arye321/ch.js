@@ -54,18 +54,26 @@ function printTopDomain() {
 Bot.on('HistoryMessage', (room, user, message) => {
   if (room.name !== roomName) return;
   addMessageText(message.text);
-  printTopDomain();
-});
-
-Bot.on('Message', (room, user, message) => {
-  if (room.name !== roomName) return;
-  addMessageText(message.text);
 });
 
 Bot.easy_start('', '', [roomName]);
 console.log(`Connecting to ${roomName} and waiting for history...`);
 
 setTimeout(() => {
-  console.log('Final domain tally after startup:');
-  printTopDomain();
-}, 10000);
+  const top = getTopDomain();
+  if (top) {
+    console.log(`${top.domain} ${top.count}`);
+  } else {
+    console.log('No domains found in chat history.');
+  }
+
+  for (const room of Object.values(Bot.rooms)) {
+    room.disconnect();
+  }
+  if (Bot.PM) {
+    Bot.PM.status = "not_ok";
+    Bot.PM.disconnect();
+  }
+
+  process.exit(0);
+}, 3000);
