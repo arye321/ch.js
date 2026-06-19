@@ -6,8 +6,12 @@ const Bot = new Chatango();
 //Bot.easy_start("uwuUserName", "uwuPassword", ["nico-nico", "tango-hyoo"]);
 
 //run as anon check nico-nico.chatango.com
-Bot.easy_start("", "", ["nico-nico", "tango-hyoo"]);   
+Bot.easy_start("", "", ["daddylivehd"]);   
 Bot.nameColor = "f00";
+
+Bot.on('HistoryMessage', (room, user, message) => {
+    console.log('[history]', room.name, user.name, message.text);
+});
 
 var owner = "agung" //replace this with your own chatango ID
 var prefix = "!" //try type !rooms

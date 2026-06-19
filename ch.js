@@ -6,6 +6,7 @@
 const WebSocket = require('ws');
 const EventEmitter = require('events');
 const Axios = require('axios');
+const crypto = require('crypto');
 
 const _chatangoTagserver = {
     "sw": {
@@ -180,9 +181,12 @@ class Room {
     }
 
     connect() {
-        var ws = new WebSocket(`${this.server}:${this.port}`, {
-            origin: 'https://st.chatango.com'
-        });
+        const wsOptions = {
+            origin: 'https://st.chatango.com',
+            rejectUnauthorized: false,
+            secureOptions: crypto.constants.SSL_OP_ALLOW_UNSAFE_LEGACY_RENEGOTIATION
+        };
+        var ws = new WebSocket(`${this.server}:${this.port}`, wsOptions);
         ws.on('open', () => {
             this._connected();
         });
@@ -569,9 +573,12 @@ class Private {
 
 
     connect() {
-        var ws = new WebSocket(`${this.server}:${this.port}`, {
-            origin: 'https://st.chatango.com'
-        });
+        const wsOptions = {
+            origin: 'https://st.chatango.com',
+            rejectUnauthorized: false,
+            secureOptions: crypto.constants.SSL_OP_ALLOW_UNSAFE_LEGACY_RENEGOTIATION
+        };
+        var ws = new WebSocket(`${this.server}:${this.port}`, wsOptions);
         ws.on('open', () => {
             this._connected();
         });
