@@ -51,22 +51,7 @@ function printTopDomain() {
   }
 }
 
-Bot.on('HistoryMessage', (room, user, message) => {
-  if (room.name !== roomName) return;
-  addMessageText(message.text);
-});
-
-Bot.easy_start('', '', [roomName]);
-console.log(`Connecting to ${roomName} and waiting for history...`);
-
-setTimeout(() => {
-  const top = getTopDomain();
-  if (top) {
-    console.log(`${top.domain} ${top.count}`);
-  } else {
-    console.log('No domains found in chat history.');
-  }
-
+function disconnectAndExit() {
   for (const room of Object.values(Bot.rooms)) {
     room.disconnect();
   }
@@ -74,6 +59,20 @@ setTimeout(() => {
     Bot.PM.status = "not_ok";
     Bot.PM.disconnect();
   }
-
   process.exit(0);
-}, 3000);
+}
+
+Bot.on('HistoryMessage', (room, user, message) => {
+  if (room.name !== roomName) return;
+  addMessageText(message.text);
+  const top = getTopDomain();
+  if (top && top.count > 3) {
+    console.log(`${top.domain}`);
+    console.log(`count: ${top.count}`);
+    disconnectAndExit();
+  }
+});
+
+Bot.easy_start('', '', [roomName]);
+console.log(`Connecting to ${roomName} and waiting for history...`);
+
